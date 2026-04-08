@@ -1,0 +1,208 @@
+
+    <!DOCTYPE html>
+    <html lang='en'>
+    <head>
+        <meta charset='UTF-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <title>DDoS Visual Forensic Analysis Report</title>
+        <link href='https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap' rel='stylesheet'>
+        <style>
+            body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; line-height: 1.6; display: flex; min-height: 100vh; }
+            .sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: #1e293b; padding: 20px; border-right: 1px solid #334155; box-shadow: 2px 0 5px rgba(0,0,0,0.2); flex-shrink: 0; overflow-y: auto; }
+            .main { margin-left: 270px; padding: 40px; flex-grow: 1; max-width: calc(100% - 270px); box-sizing: border-box; }
+            .card { background: #1e293b; padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #334155; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); }
+            .accent { color: #38bdf8; font-weight: 600; }
+            .warning { border-left: 5px solid #ef4444; }
+            .info { border-left: 5px solid #3b82f6; }
+            .success { border-left: 5px solid #10b981; }
+            h1 { font-size: 2.8rem; color: #e2e8f0; margin-bottom: 10px; font-weight: 700; }
+            h2 { font-size: 1.8rem; color: #38bdf8; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-top: 40px; margin-bottom: 25px; font-weight: 600; }
+            h3 { color: #f8fafc; font-size: 1.2rem; margin-top: 0; margin-bottom: 15px; font-weight: 600; }
+            h4 { color: #94a3b8; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; font-weight: 600; }
+            iframe { width: 100%; height: 550px; border: none; border-radius: 8px; background: #ffffff; margin-top: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); }
+            .talking-points { background: #0f172a; padding: 20px; border-radius: 8px; margin-top: 25px; border: 1px dashed #475569; }
+            ul { list-style-type: disc; padding-left: 25px; margin-top: 10px; }
+            ol { list-style-type: decimal; padding-left: 25px; margin-top: 10px; }
+            li { margin-bottom: 8px; color: #cbd5e1; }
+            a { color: #38bdf8; text-decoration: none; }
+            a:hover { text-decoration: underline; }
+            .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #334155; color: #64748b; font-size: 0.85rem; text-align: center; }
+            .summary-item { margin-bottom: 10px; }
+        </style>
+    </head>
+    <body>
+        <div class='sidebar'>
+            <h3><span class='accent'>DDoS</span> Analysis</h3>
+            <p><a href='#summary'>1. Executive Summary</a></p>
+            <p><a href='#key-findings'>2. Key Findings</a></p>
+            <p><a href='#methodology'>3. Analysis Methodology</a></p>
+            <p><a href='#timeline'>4. Traffic Timeline</a></p>
+            <p><a href='#protocols'>5. Protocols & Ports</a></p>
+            <p><a href='#geo-location'>6. Geo-Location & Origins</a></p>
+            <p><a href='#packet-behavior'>7. Packet Behavior</a></p>
+        </div>
+
+        <div class='main'>
+            <h1>DDoS Visual Forensic Analysis Report</h1>
+            <p class='accent'>Target: FiveM Gameserver | Incident Date: August 17, 2022</p>
+
+            <section id='summary' class='card warning'>
+                <h2>1. Executive Summary</h2>
+                <p>A sophisticated and high-intensity Distributed Denial of Service (DDoS) attack was observed targeting a FiveM game server. This report provides a detailed forensic breakdown of the incident, identifying key attack vectors, origins, and patterns.</p>
+                <p class='summary-item'><strong>Total Packets Analyzed:</strong> <span class='accent'>18,301,452</span></p>
+                <p class='summary-item'><strong>Peak Traffic Intensity:</strong> <span class='accent'>152,376 PPS</span></p>
+                <p class='summary-item'><strong>Primary Attack Vector:</strong> <span class='accent'>UDP</span> flood targeting Destination Port <span class='accent'>1222</span>.</p>
+                <p class='summary-item'><strong>Top Attacker Origin (Country):</strong> <span class='accent'>United States (49 packets)</span></p>
+                <p class='summary-item'><strong>Top Attacker Origin (ISP):</strong> <span class='accent'>Unknown (14 packets)</span></p>
+            </section>
+
+            <section id='key-findings' class='card info'>
+                <h2>2. Key Findings</h2>
+                <ul>
+                    <li>A total of <span class='accent'>18,301,452</span> packets were captured and analyzed over the incident period.</li>
+                    <li>The attack reached a peak intensity of <span class='accent'>152,376 PPS</span>.</li>
+                    <li>The primary attack method was identified as a <span class='accent'>UDP</span> flood, specifically targeting port <span class='accent'>1222</span>, which is consistent with common FiveM server attack vectors.</li>
+                    <li><span class='accent'>162</span> unique source IP addresses were involved in the attack, suggesting a distributed botnet.</li>
+                    <li>The top 5 attacking IP addresses by packet count are:
+                        <ul>
+                            <li><span class='accent'>35.200.213.57</span> (7,822,113 packets)</li><li><span class='accent'>34.100.137.247</span> (5,236,039 packets)</li><li><span class='accent'>65.20.74.174</span> (2,300,915 packets)</li><li><span class='accent'>34.126.187.132</span> (1,110,872 packets)</li><li><span class='accent'>45.116.228.118</span> (387,879 packets)</li>
+                        </ul>
+                    </li>
+                    <li>Geographic analysis points to <span class='accent'>United States (49 packets)</span> as the most significant origin country for the attack traffic, often routed through ISPs like <span class='accent'>Unknown (14 packets)</span>.</li>
+                    <li>Packet behavior analysis indicates widespread IP spoofing, a common tactic to obscure attacker identity.</li>
+                </ul>
+            </section>
+
+            <section id='methodology' class='card success'>
+                <h2>3. Analysis Methodology</h2>
+                <p>Our forensic investigation employed a multi-stage data engineering and visualization pipeline:</p>
+                <ol>
+                    <li><strong>Packet Extraction:</strong> Raw binary PCAP data was stream-parsed using the <code>dpkt</code> library, extracting critical header information including IP addresses, TCP/UDP flags, and Time-To-Live (TTL) values.</li>
+                    <li><strong>Data Normalization:</strong> Timestamps were converted to a uniform format, and traffic metrics such as Packets Per Second (PPS) and Megabits Per Second (Mbps) were computed for temporal analysis.</li>
+                    <li><strong>Geo-Enrichment:</strong> Unique source IP addresses were cross-referenced against the <code>MaxMind GeoLite2</code> database for geographical mapping (Country, City, Latitude, Longitude) and `IPWhois` for Autonomous System Number (ASN)/ISP identification.</li>
+                    <li><strong>Visual Synthesis:</strong> Interactive visualizations were generated using <code>Plotly</code> and <code>Folium</code> to identify attack patterns, traffic anomalies, and geographical distribution of attack sources.</li>
+                </ol>
+            </section>
+
+            <section id='timeline'>
+                <h2>4. Traffic Timeline & Attack Pulse</h2>
+                <p>This section illustrates the temporal characteristics of the attack, highlighting its start, peak intensity, and duration.</p>
+                <iframe src='charts/timeline/attack_timeline.html' title='Attack Traffic Timeline'></iframe>
+                <div class='talking-points'>
+                    <h4>Analysis Highlights:</h4>
+                    <ul>
+                        <li>Observe the sudden and significant increase in PPS and Mbps, indicating the precise commencement of the DDoS event.</li>
+                        <li>The comparison of PPS and Mbps reveals the volumetric nature of the attack, showcasing both packet frequency and bandwidth consumption.</li>
+                        <li>Protocol stacking over time (e.g., UDP dominance) confirms the primary attack vector throughout the incident.</li>
+                    </ul>
+                </div>
+                <iframe src='charts/timeline/protocol_stacked_area.html' title='Protocol Breakdown Over Time'></iframe>
+                <div class='talking-points'>
+                    <h4>Analysis Highlights:</h4>
+                    <ul>
+                        <li>The stacked area chart clearly shows the evolution of attack protocols.</li>
+                        <li>Dominance of <span class='accent'>UDP</span> confirms it as the primary weapon used in this attack.</li>
+                    </ul>
+                </div>
+                <iframe src='charts/timeline/attack_heatmap.html' title='Attack Wave Heatmap'></iframe>
+                <div class='talking-points'>
+                    <h4>Analysis Highlights:</h4>
+                    <ul>
+                        <li>The heatmap visualizes packet distribution across seconds and minutes, revealing if the attack was continuous or bursty.</li>
+                        <li>Dense red areas indicate high packet rates, pinpointing intense attack periods.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id='protocols'>
+                <h2>5. Protocol & Port Target Analysis</h2>
+                <p>Understanding which protocols and ports were targeted is crucial for identifying the nature of the attack and vulnerable services.</p>
+                <iframe src='charts/protocol_ports/protocol_sunburst.html' title='Protocol and Port Hierarchy'></iframe>
+                <div class='talking-points'>
+                    <h4>Analysis Highlights:</h4>
+                    <ul>
+                        <li>The sunburst chart provides a hierarchical view of protocol and destination port distribution.</li>
+                        <li>It distinctly shows the heavy concentration of traffic on port <span class='accent'>1222</span> under the <span class='accent'>UDP</span> protocol.</li>
+                    </ul>
+                </div>
+                <iframe src='charts/protocol_ports/top_ports_bar.html' title='Top 20 Targeted Ports'></iframe>
+                <div class='talking-points'>
+                    <h4>Analysis Highlights:</h4>
+                    <ul>
+                        <li>The bar chart confirms port <span class='accent'>1222</span> as the most targeted, indicating a direct assault on the FiveM server service.</li>
+                        <li>Presence of other ports could suggest secondary reconnaissance or collateral damage.</li>
+                    </ul>
+                </div>
+                <iframe src='charts/protocol_ports/port_scatter.html' title='Source Port vs Destination Port Scatter'></iframe>
+                <div class='talking-points'>
+                    <h4>Analysis Highlights:</h4>
+                    <ul>
+                        <li>A scattered distribution of source ports with a consistent destination port indicates IP spoofing.</li>
+                        <li>A tight cluster of both source and destination ports might suggest legitimate, but overwhelmed, connections.</li>
+                    </ul>
+                </div>
+                <iframe src='charts/protocol_ports/protocol_race.html' title='Protocol Distribution Race'></iframe>
+                <div class='talking-points'>
+                    <h4>Analysis Highlights:</h4>
+                    <ul>
+                        <li>The animated bar race illustrates the minute-by-minute shift in dominant protocols, revealing potential attacker strategy changes.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id='geo-location'>
+                <h2>6. Global Botnet Distribution (Geo-Location & Origins)</h2>
+                <p>Mapping the physical origin of the attack traffic helps in understanding the scope and source of the botnet infrastructure.</p>
+                <iframe src='charts/geo_map/attack_heatmap_world.html' title='Global Attack Heatmap'></iframe>
+                <div class='talking-points'>
+                    <h4>Analysis Highlights:</h4>
+                    <ul>
+                        <li>The global heatmap visually identifies geographical clusters of attacking IP addresses.</li>
+                        <li>Dense areas indicate significant contributions from specific regions, with <span class='accent'>United States (49 packets)</span> being a prominent origin.</li>
+                    </ul>
+                </div>
+                <iframe src='charts/geo_map/isp_treemap.html' title='Attack Source ISP / ASN Treemap'></iframe>
+                <div class='talking-points'>
+                    <h4>Analysis Highlights:</h4>
+                    <ul>
+                        <li>The treemap details the distribution of attack traffic by country and Internet Service Provider (ISP) / Autonomous System Number (ASN).</li>
+                        <li>Large blocks represent major contributing ISPs, such as <span class='accent'>Unknown (14 packets)</span>, highlighting common hosting or proxy services used by attackers.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id='packet-behavior'>
+                <h2>7. Packet Behavior (TTL, Flags, Payload)</h2>
+                <p>Examining individual packet characteristics can reveal further insights into the attack methods, including spoofing and tool identification.</p>
+                <iframe src='charts/packet_behavior/ttl_histogram.html' title='TTL Value Distribution'></iframe>
+                <div class='talking-points'>
+                    <h4>Analysis Highlights:</h4>
+                    <ul>
+                        <li>The Time-To-Live (TTL) distribution is critical for detecting IP spoofing. Inconsistent or unusual TTL values, deviating from standard OS defaults (e.g., 64, 128), strongly suggest spoofed source IPs.</li>
+                    </ul>
+                </div>
+                <iframe src='charts/packet_behavior/tcp_flag_radar.html' title='TCP Flag Radar Chart'></iframe>
+                <div class='talking-points'>
+                    <h4>Analysis Highlights:</h4>
+                    <ul>
+                        <li>For TCP-based attacks, the radar chart visualizes the frequency of different TCP flags (SYN, ACK, RST, FIN).</li>
+                        <li>A disproportionate number of SYN flags, for instance, is a hallmark of a SYN flood attack.</li>
+                    </ul>
+                </div>
+                <iframe src='charts/packet_behavior/payload_violin.html' title='Payload Size Distribution by Protocol'></iframe>
+                <div class='talking-points'>
+                    <h4>Analysis Highlights:</h4>
+                    <ul>
+                        <li>The violin plot shows the distribution of packet payload sizes across different protocols.</li>
+                        <li>Anomalously large UDP payloads, especially exceeding typical DNS response sizes (e.g., 512 bytes), can indicate amplification attacks.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <footer class='footer'>
+                Generated by DDoS Visual Analysis Module | Forensic Lead Analysis Team
+            </footer>
+        </div>
+    </body>
+    </html>
+    
